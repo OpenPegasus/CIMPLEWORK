@@ -1,0 +1,41 @@
+TOP = ../../..
+include $(TOP)/mak/config.mak
+
+MODULE=1
+
+SHARED_LIBRARY = cimple_CIM_StoragePool
+
+INCLUDES += $(CMPI_INCLUDES)
+
+SOURCES = \
+    repository.cpp \
+    CIM_ConcreteJob.cpp \
+    CIM_EnabledLogicalElement.cpp \
+    CIM_Job.cpp \
+    CIM_LogicalDevice.cpp \
+    CIM_LogicalElement.cpp \
+    CIM_ManagedElement.cpp \
+    CIM_ManagedSystemElement.cpp \
+    CIM_SettingData.cpp \
+    CIM_StorageExtent.cpp \
+    CIM_StoragePool.cpp \
+    CIM_StorageSetting.cpp \
+    module.cpp \
+    CIM_StoragePool_Provider.cpp
+
+CIMPLE_CMPI_MODULE=1
+include ../common.mak
+
+include $(TOP)/mak/rules.mak
+
+regmod:
+	$(BINDIR)/regmod -c $(TARGET)
+
+genclass:
+	$(BINDIR)/genclass -r CIM_StoragePool
+
+genprov:
+	$(BINDIR)/genprov CIM_StoragePool
+
+genmod:
+	$(BINDIR)/genmod CIM_StoragePool CIM_StoragePool

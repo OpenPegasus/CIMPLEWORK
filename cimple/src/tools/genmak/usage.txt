@@ -1,0 +1,51 @@
+Usage: %s [OPTIONS] [LIBRARY_NAME] [SOURCE_FILE ...] | [SOURCE_CLASS ...]
+
+This utility generates a makefile for building a provider module.
+
+   LIBRARY_NAME  - the name of the library module that will be generated.
+   SOURCES_FILE  - parameter defines a source file that will be compiled
+                   into this provider module. Repeat for each source file
+   SOURCE_CLASS  - class that will be compiled into a provider in this
+                   provider module. (Experimental)
+
+Examples:
+    genmak president president vicepresident # create with module name
+                                             # president and classes president
+                                             # and vicepresident
+
+    genmak -flrg president president.cpp \         # create with defined files
+           president_Provider.cpp vicepresident.cpp \ # overwrite add regmod
+           vicepresident.cpp module.cpp \          # livetest & gen targets
+           repository.cpp
+
+The SOURCE_CLASS parameter defines a list of classes for this provider. genmak
+automatically added the repository.cpp and module.cpp files to the list.
+(Experimental)
+ 
+The alternative SOURCE_FILE parameter requires a list of all the .cpp files
+that will be compiled as part of the provider.
+
+The first name on the list determines if it is a list of classes (i.e. no
+suffix on the name) or a file list.
+  
+If SOURCE_FILE is used this utility assumes that genclass, genprov, and 
+genmod have been previously executed to generate the various files for the 
+provider.  It will stop for any .ccp file on the input line that does not 
+exist.  
+
+OPTIONS:
+    -V      -- print the version.
+    -h      -- print this message.
+    -f      -- overwrite the Makefile if it already exists. Creates backup
+               file Makefile.bak
+    -C      -- generate a CMPI provider module (rather than Pegasus C++).
+    -g      -- generate targets for all operations (genclass, genprov, genmod)
+               Works only if class list provided rather than file list. This
+               allows future regeneration of the files to be controlled through
+               Makefile (i.e. make genclass, make genprov, make genmod,
+               etc. (Experimental)
+    -r      -- generate regmod target. (Experimental) and only for OpenPegasus
+    -l      -- generate sample client calls from command line (Experimental)
+    -v      -- verbose display of execution
+
+

@@ -1,0 +1,12 @@
+class President
+{
+    [Key] uint32 Number;
+    string First;
+    string Last;
+
+//  A property you can add to the class by uncommenting the following  line
+//    Uint32 age;
+
+//  A method you can add to the class by uncommenting the following line
+//    [static] Uint32 getNumberOfPresidents( [In(false),Out] Uint32 number );
+};

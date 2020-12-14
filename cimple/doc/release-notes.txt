@@ -1,0 +1,12 @@
+
+
+    1.  Must regenerate classes, providers, and modules. Must change
+        Array<Class*> parameters from this:
+
+            Array<Class*>& param1
+
+        To this:
+
+            Property< Array<Class*> >& param1
+
+        And must set to non-null.

@@ -1,0 +1,20 @@
+Usage: %s [OPTIONS] MODULE_NAME [CLASS_NAME]...
+
+This utility generates an entire "project" by running the following programs:
+
+    genclass -- to generate classes.
+    genprov  -- to generate providers.
+    genmod   -- to generate module.cpp.
+    genmak   -- to generate the Makefile (optional based on options set)
+
+OPTIONS:
+    -V      -- print the version.
+    -h      -- print this message.
+    -m      -- generate the Makefile.
+    -e      -- Generate enum tags for Values/ValueMap qualifiers (passed to
+               genclass).
+    -f      -- force overwrite of the Makefile.
+    -F file -- Read class names from this file (one per line)
+    -r      -- generate regmod target in Makefile (Experimental)
+    -v      -- verbose display of execution
+

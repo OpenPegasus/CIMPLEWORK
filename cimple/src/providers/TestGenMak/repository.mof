@@ -1,0 +1,12 @@
+class CMPL_firstClass
+{
+    [Key] uint32 Number;
+    string First;
+    string Last;
+};
+class CMPL_secondClass
+{
+    [Key] uint32 Number;
+    string First;
+    string Last;
+};

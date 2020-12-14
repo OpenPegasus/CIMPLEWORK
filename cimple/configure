@@ -1,0 +1,568 @@
+#!/bin/bash
+
+##==============================================================================
+##
+## Be sure the CIMPLE root directory is the current directory.
+##
+##==============================================================================
+
+if [ ! -f mak/config.mak ]; then
+    echo "$0: configure must run in the CIMPLE root directory"
+    exit 1
+fi
+
+##==============================================================================
+##
+## Get options from command line.
+##
+##==============================================================================
+
+help=
+
+for opt
+do
+
+  optarg=`expr "x$opt" : 'x[^=]*=\(.*\)'`
+
+  case $opt in
+
+    -h | --help)
+      help=1
+      ;;
+
+    --host=*)
+      host=$optarg 
+      ;;
+
+    --prefix=*)
+      prefix=$optarg 
+      ;;
+
+    --bindir=*)
+      bindir=$optarg
+      ;;
+
+    --libdir=*)
+      libdir=$optarg
+      ;;
+
+    --includedir=*)
+      includedir=$optarg
+      ;;
+
+    --datadir=*)
+      datadir=$optarg
+      ;;
+
+    --with-pegasus=*)
+      with_pegasus=$optarg
+      ;;
+
+    --with-pegasus-libdir=*)
+      with_pegasus_libdir=$optarg
+      ;;
+
+    --with-pegasus-includes=*)
+      with_pegasus_includes=$optarg
+      ;;
+
+    --with-pegasus-env)
+      with_pegasus_env=1
+      ;;
+
+    --with-openwbem=*)
+      with_openwbem=$optarg
+      ;;
+
+    --with-cmpi=*)
+      with_cmpi=$optarg
+      ;;
+
+    --with-schema=*)
+      with_schema=$optarg 
+      ;;
+
+    --enable-debug)
+      enable_debug=1
+      ;;
+
+    --enable-static)
+      enable_static=1
+      ;;
+
+    --with-namespace=*)
+      with_namespace=$optarg 
+      ;;
+
+    --enable-adapter-trace)
+      enable_adapter_trace=1
+      ;;
+
+    --enable-embedded-instances)
+      enable_embedded_instances=1
+      ;;
+
+    --enable-scheduler)
+      enable_scheduler=1
+      ;;
+
+    --disable-log-macros)
+      disable_log_macros=1
+      ;;
+
+    --cimplehome-envvar=*)
+      cimplehome_envvar=$optarg
+      ;;
+
+    *)
+      echo "$0: unknown option:  $opt"
+      exit 1
+      ;;
+
+  esac
+done
+
+##==============================================================================
+##
+## Help
+##
+##==============================================================================
+
+if [ "$help" = "1" ]; then
+    cat config.help
+    exit
+fi
+
+##==============================================================================
+##
+## Deduce options.
+##
+##==============================================================================
+
+# --with-pegasus-env
+
+if [ "$with_pegasus_env" = "1" ]; then
+  if [ -z "$PEGASUS_HOME" ]; then
+    echo "$0: --with-pegasus-env needs PEGASUS_HOME environment variable."
+    exit 1
+  fi
+
+  if [ -z "$PEGASUS_ROOT" ]; then
+    echo "$0: --with-pegasus-env needs PEGASUS_ROOT environment variable."
+    exit 1
+  fi
+
+  if [ -z "$PEGASUS_PLATFORM" ]; then
+    echo "$0: --with-pegasus-env needs PEGASUS_PLATFORM environment variable."
+    exit 1
+  fi
+
+  if [ -n "$PEGASUS_DEBUG" ]; then
+    if [ -z "$enable_debug" ]; then
+        enable_debug_via_PEGASUS_DEBUG=1
+    fi
+    enable_debug=1
+  fi
+
+  platform=$PEGASUS_PLATFORM
+
+  case "$platform" in
+
+      LINUX_IX86_GNU)
+        host=i686-unknown-linux-gnu
+        ;;
+
+      LINUX_X86_64_GNU)
+        host=x86_64-unknown-linux-gnu
+        ;;
+
+      LINUX_IA64_GNU)
+        host=ia64-unknown-linux-gnu
+        ;;
+
+      LINUX_S390_GNU)
+        host=s390-unknown-linux-gnu
+        ;;
+
+      LINUX_S390X_GNU)
+        host=s390x-unknown-linux-gnu
+        ;;
+
+      LINUX_PPC_GNU)
+        host=ppc-unknown-linux-gnu
+        ;;
+
+      LINUX_PPC64_GNU)
+        host=ppc64-unknown-linux-gnu
+        ;;
+
+      SOLARIS_SPARC_GNU)
+        host=sparc-sun-solaris-gnu
+        ;;
+
+      SOLARIS_IX86_CC)
+        host=x86-sun-solaris-cc
+        ;;
+
+      SOLARIS_SPARC_CC)
+        host=sparc-sun-solaris-cc
+        ;;
+
+      SOLARIS_X86_64_CC)
+        host=x86_64-sun-solaris-cc
+        ;;
+
+      SOLARIS_SPARC_64_CC)
+        host=sparc_64-sun-solaris-cc
+        ;;
+
+      DARWIN_IX86_GNU)
+        host=i386-apple-darwin-gnu
+        ;;
+
+      *)
+          echo "$0: unsupported platform: PEGASUS_PLATFORM=$PEGASUS_PLATFORM"
+          exit 1
+          ;;
+
+  esac
+
+  prefix=$PEGASUS_HOME
+  libdir=$PEGASUS_HOME/lib
+  with_pegasus=$PEGASUS_HOME
+  with_pegasus_libdir=$PEGASUS_HOME/lib
+  with_pegasus_includes=$PEGASUS_ROOT/src
+
+  if [ -z "$with_cmpi" ]; then
+    with_cmpi=$PEGASUS_ROOT/src/Pegasus/Provider/CMPI
+  fi
+
+fi
+
+# --host: Set platform and libbase based on host input parameter or by guessing
+
+if [ -z "$host" ]; then
+  source ./config.guess > /dev/null
+fi
+
+case "$host" in
+
+    i686-unknown-linux-gnu)
+        platform=LINUX_IX86_GNU
+        libbase=lib
+        ;;
+
+    x86_64-unknown-linux-gnu)
+        platform=LINUX_X86_64_GNU
+        libbase=lib64
+        ;;
+
+    ia64-unknown-linux-gnu)
+        platform=LINUX_IA64_GNU
+        libbase=lib
+        ;;
+
+    s390-unknown-linux-gnu)
+        platform=LINUX_S390_GNU
+        libbase=lib
+        ;;
+
+    s390x-unknown-linux-gnu)
+        platform=LINUX_S390X_GNU
+        libbase=lib64
+        ;;
+
+    ppc-unknown-linux-gnu)
+        platform=LINUX_PPC_GNU
+        libbase=lib
+        ;;
+
+    ppc64-unknown-linux-gnu)
+        platform=LINUX_PPC64_GNU
+        libbase=lib64
+        ;;
+
+    arm-wrs-vxworks-gnu)
+        platform=VXWORKS_XSCALE_GNU
+        libbase=lib
+        enable_static=1
+        ;;
+
+    sparc-sun-solaris-gnu)
+        platform=SOLARIS_SPARC_GNU
+        libbase=lib
+        ;;
+
+    x86-sun-solaris-cc)
+        platform=SOLARIS_IX86_CC
+        libbase=lib
+        ;;
+
+    sparc-sun-solaris-cc)
+        platform=SOLARIS_SPARC_CC
+        libbase=lib
+        ;;
+
+    x86_64-sun-solaris-cc)
+        platform=SOLARIS_X86_64_CC
+        libbase=lib64
+        ;;
+
+    sparc_64-sun-solaris-cc)
+        platform=SOLARIS_SPARC_64_CC
+        libbase=lib64
+        ;;
+
+    i386-apple-darwin-gnu)
+        platform=DARWIN_IX86_GNU
+        libbase=lib
+        ;;
+
+    *)
+        echo "$0: unknown host: $host"
+        exit 1
+        ;;
+
+esac
+
+# --prefix:
+
+if [ -z "$prefix" ]; then
+  prefix=/usr/local
+fi
+
+# --bindir:
+
+if [ -z "$bindir" ]; then
+  bindir=$prefix/bin
+fi
+
+# --libdir:
+
+if [ -z "$libdir" ]; then
+  libdir=$prefix/$libbase
+fi
+
+# --includedir:
+
+if [ -z "$includedir" ]; then
+  includedir=$prefix/include
+fi
+
+# --datadir:
+
+if [ -z "$datadir" ]; then
+  datadir=$prefix/share
+fi
+
+# Set --with-schema
+
+if [ -z "$with_schema" ]; then
+  with_schema=$datadir/cimple/schema/cim214
+fi
+
+# with_pegasus_libdir
+
+if [ -n "$with_pegasus" ]; then
+  if [ -z "$with_pegasus_libdir" ]; then
+    with_pegasus_libdir=$with_pegasus/$libbase
+  fi
+fi
+
+# with_pegasus_includes
+
+if [ -n "$with_pegasus" ]; then
+  if [ -z "$with_pegasus_includes" ]; then
+    with_pegasus_includes=$with_pegasus/include
+  fi
+fi
+
+if [ -z "$cimplehome_envvar" ]; then
+    cimplehome_envvar=CIMPLE_HOME
+fi
+
+
+
+##==============================================================================
+##
+## These options (if non-empty) must denote absolute directory names.
+##
+##==============================================================================
+
+for i in \
+  prefix \
+  bindir \
+  libdir \
+  includedir \
+  datadir \
+  with_pegasus \
+  with_pegasus_libdir \
+  with_pegasus_includes \
+  with_openwbem \
+  with_cmpi \
+  with_schema
+do
+
+  eval v=$`echo $i`
+
+  case $v in
+    /* | "") 
+      ;;
+
+    *)
+      echo "$0: error: must be an absolute directory name: --$i=$v"
+      exit 1;
+      ;;
+  esac
+
+done
+
+##==============================================================================
+##
+## Check locations:
+##
+##==============================================================================
+
+if [ -n "$with_pegasus" ]; then
+
+  if [ ! -d "$with_pegasus" ]; then
+    echo "$0: no such directory: with_pegasus=$with_pegasus"
+    exit 1
+  fi
+
+  if [ ! -d "$with_pegasus/bin" ]; then
+    echo "$0: no such directory: with_pegasus/bin=$with_pegasus/bin"
+    exit 1
+  fi
+
+  if [ ! -d "$with_pegasus_libdir" ]; then
+    echo "$0: no such directory: with_pegasus_libdir=$with_pegasus_libdir"
+    exit 1
+  fi
+
+  if [ ! -d "$with_pegasus_includes" ]; then
+    echo "$0: no such directory: with_pegasus_includes=$with_pegasus_includes"
+    exit 1
+  fi
+
+fi
+
+if [ -n "$with_cmpi" ]; then
+
+  if [ ! -d "$with_cmpi" ]; then
+    echo "$0: no such directory: with_cmpi=$with_cmpi"
+    exit 1
+  fi
+
+  if [ ! -f "$with_cmpi/cmpift.h" ]; then
+    echo "$0: directory missing CMPI headers: with_cmpi=$with_cmpi"
+    exit 1
+  fi
+
+  if [ ! -f "$with_cmpi/cmpidt.h" ]; then
+    echo "$0: directory missing CMPI headers: with_cmpi=$with_cmpi"
+    exit 1
+  fi
+
+  if [ ! -f "$with_cmpi/cmpimacs.h" ]; then
+    echo "$0: directory missing CMPI headers: with_cmpi=$with_cmpi"
+    exit 1
+  fi
+
+fi
+
+if [ -n "$with_openwbem" ]; then
+
+  if [ ! -d "$with_openwbem" ]; then
+    echo "$0: no such directory: with_openwbem=$with_openwbem"
+    exit 1
+  fi
+
+  if [ ! -d "$with_openwbem/bin" ]; then
+    echo "$0: no such directory: with_openwbem/bin=$with_openwbem/bin"
+    exit 1
+  fi
+
+  if [ ! -d "$with_openwbem/$libbase" ]; then
+    echo "$0: no such directory: with_openwbem/$libbase=$with_openwbem/$libbase"
+    exit 1
+  fi
+
+  if [ ! -d "$with_openwbem/include" ]; then
+    echo "$0: no such directory: with_openwbem/include=$with_openwbem/include"
+    exit 1
+  fi
+
+fi
+
+##==============================================================================
+##
+## Create config.options
+##
+##==============================================================================
+
+fn=config.options
+
+if [ -f $fn ]; then
+    echo backup $fn to $fn.bak
+    mv -f $fn $fn.bak
+fi
+
+ScriptName=`basename $0`
+
+echo "# This file was generated by configure." >> $fn
+echo "# Input: ./$ScriptName $*" >> $fn
+
+echo "HOST_OPT=$host" >> $fn
+echo "PREFIX_OPT=$prefix" >> $fn
+echo "BINDIR_OPT=$bindir" >> $fn
+echo "LIBDIR_OPT=$libdir" >> $fn
+echo "INCLUDEDIR_OPT=$includedir" >> $fn
+echo "DATADIR_OPT=$datadir" >> $fn
+echo "WITH_PEGASUS_OPT=$with_pegasus" >> $fn
+echo "WITH_CMPI_OPT=$with_cmpi" >> $fn
+echo "WITH_OPENWBEM_OPT=$with_openwbem" >> $fn
+echo "WITH_SCHEMA_OPT=$with_schema" >> $fn
+
+if [ ! -z "$enable_debug" ]; then
+    if [ ! -z "$enable_debug_via_PEGASUS_DEBUG" ]; then
+       echo "## ENABLE_DEBUG_OPT set because PEGASUS_DEBUG set" >> $fn
+    fi
+echo "ENABLE_DEBUG_OPT=$enable_debug" >> $fn
+fi
+
+echo "ENABLE_STATIC_OPT=$enable_static" >> $fn
+echo "PLATFORM=$platform" >> $fn
+echo "LIBBASE_OPT=$libbase" >> $fn
+echo "WITH_PEGASUS_LIBDIR_OPT=$with_pegasus_libdir" >> $fn
+echo "WITH_PEGASUS_INCLUDES_OPT=$with_pegasus_includes" >> $fn
+echo "CIMPLEHOME_ENVVAR_OPT=$cimplehome_envvar" >> $fn
+
+echo "ENABLE_EMBEDDED_INSTANCES_OPT=$enable_embedded_instances" >> $fn
+
+if [ ! -z "$enable_scheduler" ]; then
+    echo "ENABLE_SCHEDULER_OPT=$enable_scheduler" >> $fn
+fi
+
+if [ ! -z "$disable_log_macros" ]; then
+    echo "DISABLE_LOG_MACROS_OPT=$disable_log_macros" >> $fn
+fi
+
+if [ ! -z "$enable_adapter_trace" ]; then
+echo "ENABLE_ADAPTER_TRACE_OPT=$enable_adapter_trace" >>$fn
+fi
+
+if [ ! -z "$with_namespace" ]; then
+    echo "WITH_NAMESPACE_OPT=$with_namespace" >> $fn
+fi
+
+echo "##End-Of-File" >> $fn
+
+echo "Created $fn."
+echo "Configured for $host."
+echo
+
+## remove the options file so it will be regenerated each time this
+## script is run. Note: not necessary since the options Makefile
+## operates off of make target.
+rm -f src/cimple/options.h
