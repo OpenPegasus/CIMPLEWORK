@@ -104,6 +104,9 @@ else
   FLAGS += -O2
 endif
 
+# Issue # 2. These should be removed and the code corrected
+FLAGS += -Wno-class-memaccess
+FLAGS += -Wno-deprecated-copy
 ##==============================================================================
 ##
 ## OBJ
