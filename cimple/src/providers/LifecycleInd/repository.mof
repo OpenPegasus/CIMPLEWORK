@@ -1,0 +1,12 @@
+class LC_Test
+{
+    [Key] uint32 Id;
+    string First;
+    string Last;
+};
+
+
+[Indication]
+class LC_InstCreation: CIM_InstCreation
+{
+};

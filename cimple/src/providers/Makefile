@@ -41,7 +41,8 @@ DIRS = \
     Employee/ci \
     Time \
     Time/InvokeTime \
-    Widget
+    Widget \
+    LifecycleInd
 
 ### Not included in normal testing because this is a sfcb only test provider
 ### right now.
