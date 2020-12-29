@@ -66,7 +66,7 @@ void LampIndicConsumer::consumeIndication(
         if (++_count == 5)
             _success = true;
 
-        printf("Consume indication... %u finished %s \n", _count,
+        printf("Consume indication... %zu finished %s \n", _count,
                 (_success? "true" : "false"));
     }
 
