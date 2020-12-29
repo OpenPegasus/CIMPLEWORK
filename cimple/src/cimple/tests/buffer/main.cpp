@@ -631,7 +631,7 @@ int main(int argc, char *argv[])
     Thread threads[N];
     if (verbose)
     {
-        printf("Repeat test with Multiple %d Threads\n", N);
+        printf("Repeat test with Multiple %zu Threads\n", N);
     }
 
     // Set up the multiple threads
