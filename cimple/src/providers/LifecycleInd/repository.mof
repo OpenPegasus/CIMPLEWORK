@@ -1,8 +1,7 @@
 class LC_Test
 {
     [Key] uint32 Id;
-    string First;
-    string Last;
+    string TestData;
 };
 
 

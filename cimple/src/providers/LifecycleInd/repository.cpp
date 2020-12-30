@@ -12,6 +12,7 @@ CIMPLE_NAMESPACE_BEGIN
 /*[2815]*/
 static const Meta_Class* _meta_classes[] =
 {
+    &LC_Test::static_meta_class,
     &CIM_Indication::static_meta_class,
     &CIM_InstIndication::static_meta_class,
     &CIM_InstCreation::static_meta_class,
@@ -20,10 +21,10 @@ static const Meta_Class* _meta_classes[] =
 
 static const size_t _num_meta_classes = CIMPLE_ARRAY_SIZE(_meta_classes);
 
-extern const Meta_Repository __meta_repository_6FF88CC366261FACB440F949B95C94A9;
+extern const Meta_Repository __meta_repository_CB79DF59E9681ED7B2F09212824D7951;
 
 /*[2842]*/
-const Meta_Repository __meta_repository_6FF88CC366261FACB440F949B95C94A9 =
+const Meta_Repository __meta_repository_CB79DF59E9681ED7B2F09212824D7951 =
 {
     _meta_classes,
     _num_meta_classes,
