@@ -151,7 +151,8 @@ BLANK                   [ \t\n]
 	case '\'':
 	case '\\':
 	    ch = yytext[2];
-
+            break;
+ 
 	default:
 	    MOF_ASSERT(0);
     }

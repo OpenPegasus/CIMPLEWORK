@@ -277,6 +277,9 @@ CIMPLE_NAMESPACE_END
 //
 // CIMPLE_OFF
 //
+// Defines the offset to a field in a class where the file may be a property,
+//         etc.
+//
 //==============================================================================
 
 #define CIMPLE_OFF(CLASS, FIELD) (((size_t)(void*)&(((CLASS*)8)->FIELD))-8)
@@ -295,7 +298,7 @@ CIMPLE_NAMESPACE_END
 //
 //==============================================================================
 
-#define CIMPLE_BIT(N) (1 << (N))
+#define CIMPLE_BIT(N) (unsigned int)(1 << (N))
 
 //==============================================================================
 //
@@ -466,7 +469,7 @@ extern int __CIMPLE_VERSION_SYMBOL(CIMPLE_MAJOR, CIMPLE_MINOR, CIMPLE_REVISION);
 //==============================================================================
 
 static CIMPLE_UNUSED const char __cimple_version_tag[] = \
-    "@(#)CIMPLE_VERSION="CIMPLE_VERSION_STRING;
+    "@(#)CIMPLE_VERSION=" CIMPLE_VERSION_STRING;
 
 //==============================================================================
 //

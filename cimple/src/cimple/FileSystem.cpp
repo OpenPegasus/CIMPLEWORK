@@ -34,6 +34,7 @@
 #include <fstream>
 #include "FileSystem.h"
 #include <errno.h>
+#include <unistd.h>
 
 #ifdef CIMPLE_WINDOWS_MSVC
 # include <windows.h>

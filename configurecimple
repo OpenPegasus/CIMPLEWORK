@@ -1,0 +1,9 @@
+#!/bin/bash
+
+## load the pegasus options setup
+# source pegasus/options.mak
+
+## go to cimple directory and configure cimple
+cd cimple
+./configure --with-pegasus-env --enable-embedded-instances --enable-debug
+
