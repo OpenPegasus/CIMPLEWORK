@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Script to set common environment variables for a single Pegasus Checkout
+# Run from directory above the expected pegasus directory
+
+# Exports for home and root. Based on the pwd.
+
+####export PEGASUS_CVS_BRANCH=HEAD
+export PEGASUS_CVS_BRANCH=RELEASE_2_12_0
+export PEGASUS_WHO_DESCRIPTION="Pegasus for CIMPLE Testing, branch 2.12.0"
+
+# Unset so the pegasus common script is used to set
+unset CVSROOT
+
+# call the pegasus common setup functionality
+if [ -f ~/scripts/setPegasusCommonEnv ]; then
+        source setPegasusCommonEnv
+else
+    echo No setPegasusCommonEnv file found
+fi
+
+#Set and unset of major environment variables for this particular build
+
+#export PEGASUS_ENABLE_INTEROP_PROVIDER=false
+####export PEGASUS_ENABLE_SLP=true
+####export PEGASUS_USE_OPENSLP=true
+#export PEGASUS_OPENSLP_HOME
+#export PEGASUS_DISABLE_PERFINST
+
+####export PEGASUS_DEBUG=true
+#export PEGASUS_HAS_SSL=true
+#export OPENSSL_HOME=/usr
+#export PEGASUS_CLIENT_TRACE_ENABLE=true
+#export PEGASUS_REMOVE_TRACE=true
+#export PEGASUS_DEFAULT_ENABLE_OOP=false
+#export PEGASUS_DISABLE_PROV_USERCTXT=true
+#export PEGASUS_DISABLE_PRIVILEGED_TESTS=true
+#export PEGASUS_OPTIMIZE_FOR_SIZE=true
+#export PEGASUS_DISABLE_TRACE=true
+####export PEGASUS_ENABLE_CMPI_PROVIDER_MANAGER=true
+
+#export| grep PEGASUS
+####export PEGASUS_DEFAULT_ENABLE_OOP=false
+####export PEGASUS_DISABLE_PROV_USERCTXT=true
+####export PEGASUS_DISABLE_PRIVILEGED_TESTS=true
+#export PEGASUS_INDICATION_HASHTRACE
+
+#export PEGASUS_EXTRA_CXX_FLAGS="-Werror"
+#export PEGASUS_EXTRA_C_FLAGS="-Werror"
+###echo
+
+export CIMPLEROOT=$PWD/cimple
+source setCommonCimpleEnv $CIMPLEROOT
+
+##export CIMPLE_WERROR=1
+echo NOTE: CIMPLE_WERROR not set
+
+## Set the directory where we keep .cimplerc and is the parent of the
+## .cimple directory containing the message file.
+export CIMPLE_HOME=$PWD
+##echo Go to cimple directory
+cd cimple

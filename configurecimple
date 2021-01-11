@@ -7,3 +7,6 @@
 cd cimple
 ./configure --with-pegasus-env --enable-embedded-instances --enable-debug
 
+# TODO: Correct the pegasus repository location
+
+#export ... /root/smi/OpenPegasus/pegasus/Schemas/CIM241
