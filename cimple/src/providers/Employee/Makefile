@@ -34,16 +34,16 @@ regmod:
 	$(BINDIR)/regmod -c $(TARGET)
 
 genprov:
-	$(BINDIR)/genprov Employee Manager Link OutOfOfficeNotice
+	$(BINDIR)/genprov Employee Manager Link OutOfOfficeNotice Employee_CreateInstance
 
 genmod:
-	$(BINDIR)/genmod Employee Employee Manager Link OutOfOfficeNotice
+	$(BINDIR)/genmod Employee Employee Manager Link OutOfOfficeNotice Employee_CreateInstance
 
 genclass:
-	$(BINDIR)/genclass -r Employee Manager Link OutOfOfficeNotice
+	$(BINDIR)/genclass -r Employee Manager Link OutOfOfficeNotice Employee_CreateInstance
 
 genproj:
-	$(BINDIR)/genproj Employee Employee Manager Link OutOfOfficeNotice
+	$(BINDIR)/genproj Employee Employee Manager Link OutOfOfficeNotice Employee_CreateInstance
 
 regmod-dump:
 	$(BINDIR)/regmod -d -c $(TARGET)

@@ -38,3 +38,13 @@ class OutOfOfficeNotice
     [EmbeddedObject]
     string employee;
 };
+
+[Indication]
+class Employee_InstCreation: CIM_InstCreation
+{
+};
+
+[Indication]
+class Employee_InstDeletion: CIM_InstDeletion
+{
+};
