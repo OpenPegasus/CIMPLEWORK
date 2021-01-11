@@ -1,0 +1,23 @@
+#/bin/bash
+#
+# This script is a temp carry over from earlier testing.
+# EXPERIMENTAL
+#
+
+if [ -d pegasus ]
+then
+    cd pegasus
+    if [ ! -e configure ]
+    then
+        echo openpegasus configure script missing
+        exit 1
+    fi
+    # ./configure --disable-oop --enable-debug
+    # The above has options that are not enabled in the std
+    # openpegasus release
+    ./configure
+    # now add the client trace to options.mak
+    echo "export PEGASUS_CLIENT_TRACE_ENABLE=true" >> options.mak
+else
+    echo pegasus directory does not exist
+fi

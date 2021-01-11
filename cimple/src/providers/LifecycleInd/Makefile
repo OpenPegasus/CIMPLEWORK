@@ -7,11 +7,13 @@ SHARED_LIBRARY = cimpleLifecycleInd
 
 SOURCES = \
     module.cpp \
+    Resource.cpp \
     LC_Test.cpp \
     LC_Test_Provider.cpp \
     LC_InstCreation.cpp \
     LC_InstCreationProvider.cpp \
     repository.cpp
+
 
 # Allow building providers for either CMPI or Pegasus C++ provider interface
 # Changing Provider interfaces requires reregistering the provider.

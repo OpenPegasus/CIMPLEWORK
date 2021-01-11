@@ -3,6 +3,24 @@
 
 CIMPLE_NAMESPACE_BEGIN
 
+
+void* LC_InstCreation_Provider::send_indication(new_instance)
+{
+    printf("LC_InstCreation_Provider::send_indication()\n");
+
+    LC_InstCreation_Provider* provider = (LC_InstCreation_Provider*)arg;
+
+    LC_InstCreation_Provider* new_indication = LC_InstCreation::create(true);
+                new_indication->SourceInstance = new_instance;
+                new_indication->SourceInstanceHost = TBD
+                new_indication->SourceInstanceModelPath = TBD
+                provider->_indication_handler->handle(notice);
+
+    provider->_indication_handler->handle(new_indication);
+
+    return 0;
+}
+
 LC_InstCreation_Provider::LC_InstCreation_Provider() : _indication_handler(0)
 {
 }
@@ -26,6 +44,11 @@ Enable_Indications_Status LC_InstCreation_Provider::enable_indications(
 {
     _indication_handler = indication_handler;
 
+    // set the indication_sender function pointer in Resource
+    resource.mutex.lock();
+    resource.indication_sender = &send_indication
+    resource.mutex.unlock();
+
     return ENABLE_INDICATIONS_OK;
 }
 
@@ -33,6 +56,11 @@ Disable_Indications_Status LC_InstCreation_Provider::disable_indications()
 {
     if (_indication_handler)
     {
+        // Clear the resource callback.
+        resource.mutex.lock();
+        resource.callback = 0
+        resource.mutex.unlock();
+
         delete _indication_handler;
         _indication_handler = 0;
     }

@@ -4,6 +4,7 @@
 
 #include <cimple/cimple.h>
 #include "LC_InstCreation.h"
+#includ "LC_Test.h"
 
 CIMPLE_NAMESPACE_BEGIN
 
@@ -25,6 +26,9 @@ public:
         Indication_Handler<LC_InstCreation>* indication_handler);
 
     Disable_Indications_Status disable_indications();
+
+    // User-added method to create and send an indication
+    SendIndication(LC_Test *LC_new_instance);
 
     /*@END@*/
 private:

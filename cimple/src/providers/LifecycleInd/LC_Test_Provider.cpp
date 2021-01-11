@@ -38,6 +38,13 @@ Enum_Instances_Status LC_Test_Provider::enum_instances(
 Create_Instance_Status LC_Test_Provider::create_instance(
     LC_Test* instance)
 {
+    // NOTE: Simplistic provider does not save instances
+    // so no concept of duplicate.
+
+    // Execute callback with new instance
+    // The resource does conflict testing and only sends if the
+    // indication is enabled
+    resource.indication_sender(instance->clone());
     return CREATE_INSTANCE_UNSUPPORTED;
 }
 
