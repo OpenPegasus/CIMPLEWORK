@@ -8,7 +8,7 @@ void* LC_InstCreation_Provider::send_indication(new_instance)
 {
     printf("LC_InstCreation_Provider::send_indication()\n");
 
-    LC_InstCreation_Provider* provider = (LC_InstCreation_Provider*)arg;
+    LC_InstCreation* provider = (LC_InstCreation_Provider*)arg;
 
     LC_InstCreation_Provider* new_indication = LC_InstCreation::create(true);
                 new_indication->SourceInstance = new_instance;
