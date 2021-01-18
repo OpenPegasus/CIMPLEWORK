@@ -28,7 +28,7 @@ public:
     Disable_Indications_Status disable_indications();
 
     // User-added method to create and send an indication
-    void SendIndication(LC_Test *LC_new_instance);
+    int SendIndication(LC_Test *LC_new_instance);
 
     /*@END@*/
 private:

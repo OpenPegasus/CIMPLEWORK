@@ -11,7 +11,7 @@ SOURCES = \
     LC_Test.cpp \
     LC_Test_Provider.cpp \
     LC_InstCreation.cpp \
-    LC_InstCreationProvider.cpp \
+    LC_InstCreation_Provider.cpp \
     repository.cpp
 
 
