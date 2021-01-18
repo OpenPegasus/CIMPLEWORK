@@ -4,7 +4,7 @@
 
 #include <cimple/cimple.h>
 #include "LC_InstCreation.h"
-#includ "LC_Test.h"
+#include "LC_Test.h"
 
 CIMPLE_NAMESPACE_BEGIN
 
@@ -28,7 +28,7 @@ public:
     Disable_Indications_Status disable_indications();
 
     // User-added method to create and send an indication
-    SendIndication(LC_Test *LC_new_instance);
+    void SendIndication(LC_Test *LC_new_instance);
 
     /*@END@*/
 private:
