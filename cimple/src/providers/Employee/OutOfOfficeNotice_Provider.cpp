@@ -29,13 +29,14 @@ void* OutOfOfficeNotice_Provider::_indication_thread(void* arg)
 
         resource.mutex.unlock();
 
+        // Sleep for one second
         Time::sleep(1 * Time::SEC);
     }
 
     return 0;
 }
 
-OutOfOfficeNotice_Provider::OutOfOfficeNotice_Provider() : 
+OutOfOfficeNotice_Provider::OutOfOfficeNotice_Provider() :
     _indication_handler(0)
 {
 }
