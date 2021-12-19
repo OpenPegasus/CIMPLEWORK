@@ -7,6 +7,7 @@ SHARED_LIBRARY = cimpleLifecycleInd
 
 SOURCES = \
     module.cpp \
+    resource.cpp \
     LC_Test.cpp \
     LC_Test_Provider.cpp \
     LC_InstCreation.cpp \

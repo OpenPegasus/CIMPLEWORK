@@ -25,34 +25,104 @@ Get_Instance_Status LC_Test_Provider::get_instance(
     const LC_Test* model,
     LC_Test*& instance)
 {
-    return GET_INSTANCE_UNSUPPORTED;
+    Auto_Mutex am(resource.mutex);
+
+    for (size_t i = 0; i < resource.lc_tests.size(); i++)
+    {
+        LC_Test* e = resource.elc_tests[i];
+
+        if (key_eq(model, e))
+        {
+            instance = e->clone();
+            return GET_INSTANCE_OK;
+        }
+    }
+
+    return GET_INSTANCE_NOT_FOUND;
 }
 
 Enum_Instances_Status LC_Test_Provider::enum_instances(
     const LC_Test* model,
     Enum_Instances_Handler<LC_Test>* handler)
 {
+    Auto_Mutex am(resource.mutex);
+
+    for (size_t i = 0; i < resource.lc_tests.size(); i++)
+    {
+        LC_Test* e = resource.lc_tests[i];
+        handler->handle(e->clone());
+    }
+
     return ENUM_INSTANCES_OK;
 }
 
 Create_Instance_Status LC_Test_Provider::create_instance(
     LC_Test* instance)
 {
-    return CREATE_INSTANCE_UNSUPPORTED;
+    for (size_t i = 0; i < resource.lc_tests.size(); i++)
+    {
+        LC_Test* e = resource.lc_tests[i];
+
+        if (key_eq(instance, e))
+            return CREATE_INSTANCE_DUPLICATE;
+    }
+
+    resource.lc_tests.append(instance->clone());
+
+    resource.new_instance = instance.key
+
+    // Notify LC_InstCreation_Provider that new instance created.
+
+    return CREATE_INSTANCE_OK;
 }
 
 Delete_Instance_Status LC_Test_Provider::delete_instance(
     const LC_Test* instance)
 {
-    return DELETE_INSTANCE_UNSUPPORTED;
+    for (size_t i = 0; i < resource.lc_tests.size(); i++)
+    {
+        LC_Test* e = resource.lc_tests[i];
+
+        if (key_eq(instance, e))
+        {
+            resource.lc_tests.remove(i);
+            LC_Test::destroy(e);
+            return DELETE_INSTANCE_OK;
+        }
+    }
+
+    return DELETE_INSTANCE_NOT_FOUND;
 }
 
 Modify_Instance_Status LC_Test_Provider::modify_instance(
     const LC_Test* model,
     const LC_Test* instance)
 {
-    return MODIFY_INSTANCE_UNSUPPORTED;
-}
+
+    for (size_t i = 0; i < resource.lc_tests.size(); i++)
+    {
+
+    for (size_t i = 0; i < resource.lc_tests.size(); i++)
+    {
+        Employee* e = resource.lc_tests[i];
+
+        if (key_eq(instance, e))
+        {
+            copy(e, instance, model);
+            return MODIFY_INSTANCE_OK;
+        }
+    }
+
+    return MODIFY_INSTANCE_NOT_FOUND;* e = resource.employees[i];
+
+        if (key_eq(instance, e))
+        {
+            copy(e, instance, model);
+            return MODIFY_INSTANCE_OK;
+        }
+    }
+
+    return MODIFY_INSTANCE_NOT_FOUND;}
 
 /*@END@*/
 

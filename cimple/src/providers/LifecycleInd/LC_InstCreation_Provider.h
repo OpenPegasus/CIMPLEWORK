@@ -29,6 +29,12 @@ public:
     /*@END@*/
 private:
 
+    // Manually added
+    static void* _indication_thread(void* arg);
+    Thread _thread;
+    Atomic_Counter _continue;
+
+    // Part of the build provider
     Indication_Handler<LC_InstCreation>* _indication_handler;
 };
 
